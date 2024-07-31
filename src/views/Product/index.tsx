@@ -1,13 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
+import { ProductType } from "@/types/product.type";
 import styles from "./product.module.scss";
-
-type ProductType = {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  category: string;
-};
 
 const ProductView = ({ products }: { products: ProductType[] }) => {
   return (
