@@ -12,13 +12,10 @@ const ProductPage = (props: { products: ProductType[] }) => {
 
 export default ProductPage;
 
-//dipanggil setiap melakukan request
-
-export async function getServerSideProps() {
+export async function getStaticProps() {
   //fetch data
   const res = await fetch("http://localhost:3000/api/product");
   const response = await res.json();
-
   return {
     props: {
       products: response.data,
