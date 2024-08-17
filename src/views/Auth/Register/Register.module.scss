@@ -7,9 +7,13 @@
   width: 100vw;
   &__title {
     font-size: 32px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     font-weight: bold;
     color: #0061c1;
+  }
+  &__error {
+    color: rgb(255, 0, 0);
+    margin-bottom: 10px;
   }
   &__form {
     width: 30%;
