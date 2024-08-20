@@ -1,10 +1,47 @@
-@import "@/styles/colors.scss";
-
 .login {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  flex-direction: column;
   height: 100vh;
-  background-color: map-get($schema, primary);
+  width: 100vw;
+  &__title {
+    font-size: 32px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #0061c1;
+  }
+  &__error {
+    color: rgb(255, 0, 0);
+    margin-bottom: 10px;
+  }
+  &__form {
+    width: 30%;
+    padding: 20px;
+    box-shadow: 0 0 3px rgba($color: #000000, $alpha: 0.5);
+    margin-bottom: 20px;
+    &__item {
+      display: flex;
+      flex-direction: column;
+      margin: 20px 0;
+      &__input {
+        padding: 10px;
+        background-color: #eee;
+        margin-top: 5px;
+      }
+      &__button {
+        background-color: #0061c1;
+        color: #fff;
+        width: 100%;
+        padding: 10px;
+      }
+    }
+  }
+
+  &__link {
+    a {
+      color: #0061c1;
+      font-weight: bold;
+    }
+  }
 }

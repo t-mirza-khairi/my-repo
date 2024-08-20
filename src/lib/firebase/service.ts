@@ -2,6 +2,7 @@ import {
   collection,
   doc,
   getDoc,
+  addDoc,
   getDocs,
   getFirestore,
   query,
@@ -29,6 +30,24 @@ export async function retrieveDataByID(collectionName: string, id: string) {
   return data;
 }
 
+export async function signIn(userData: { email: string }) {
+  const q = query(
+    collection(firestore, "users"),
+    where("email", "==", userData.email)
+  );
+
+  const snapshot = await getDocs(q);
+  const data = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+  if (data) {
+    return data[0];
+  } else {
+    return null;
+  }
+}
+
 export async function signUp(
   userData: {
     email: string;
@@ -36,28 +55,29 @@ export async function signUp(
     password: string;
     role?: string;
   },
-  callback: Function
+  callback: (status: boolean, message: string) => void
 ) {
   const q = query(
     collection(firestore, "users"),
     where("email", "==", userData.email)
   );
-}
-const snapshot = await getDocs(q);
-const data = snapshot.docs.map((doc) => ({
-  id: doc.id,
-  ...doc.data(),
-}));
-if (data.length > 0) {
-  callback({ status: false, messsage: "Email already exists" });
-} else {
-  userData.password = await bcrypt.hash(userData.password, 10);
-  userData.role = "member";
-  await addDoc(collection(firestore, "users"), userData)
-    .then(() => {
-      callback({ status: true, message: "Register success" });
-    })
-    .catch((error) => {
-      callback({ status: false, message: error });
-    });
+
+  const snapshot = await getDocs(q);
+  const data = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  if (data.length > 0) {
+    callback(false, "Email already exists");
+  } else {
+    userData.password = await bcrypt.hash(userData.password, 10);
+    userData.role = "member";
+    try {
+      await addDoc(collection(firestore, "users"), userData);
+      callback(true, "Register success");
+    } catch (error: any) {
+      callback(false, error.message);
+    }
+  }
 }
