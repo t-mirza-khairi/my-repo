@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { signIn, signOut, useSession } from "next-auth/react";
 import styles from "./Navbar.module.css";
 
@@ -8,6 +9,13 @@ const Navbar = () => {
       <div className="big">Navbar</div>
       <div>
         {data && data.user.fullname}{" "}
+        {data.user.image && (
+          <img
+            className={styles.avatar}
+            src={data.user.image}
+            alt={data.user.fullname}
+          />
+        )}
         {data ? (
           <button className={styles.button} onClick={() => signOut()}>
             Sign Out

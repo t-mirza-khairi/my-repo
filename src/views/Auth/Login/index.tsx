@@ -28,11 +28,11 @@ const LoginView = () => {
         push(callbackUrl);
       } else {
         setIsLoading(false);
-        setError(res.error);
+        setError("Email or password is incorrect");
       }
     } catch (error: any) {
       setIsLoading(false);
-      setError(error);
+      setError("Email or password is incorrect");
     }
   };
   return (
@@ -77,6 +77,17 @@ const LoginView = () => {
             {isLoading ? "Loading..." : "Login"}
           </button>
         </form>
+        <button
+          onClick={() =>
+            signIn("google", {
+              callbackUrl,
+              redirect: false,
+            })
+          }
+          className={styles.login__form__item__google}
+        >
+          Sign In With Google
+        </button>
       </div>
       <p className={styles.login__link}>
         Don{"'"}t have an account? Sign up{" "}
