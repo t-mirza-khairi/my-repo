@@ -21,7 +21,7 @@ export default function withAuth(
       });
       if (!token) {
         const url = new URL("/auth/login", req.url);
-        url.searchParams.set("callbacUrl", encodeURI(req.url));
+        url.searchParams.set("callbackUrl", encodeURI(req.url));
         return NextResponse.redirect(url);
       }
       if (token.role !== "admin" && onlyAdmin.includes(pathname)) {
