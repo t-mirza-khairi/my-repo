@@ -1,10 +1,9 @@
-import { signIn } from "@/lib/firebase/service";
+import { signIn, signInWithGoogle } from "@/lib/firebase/service";
 import { compare } from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import CreadentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import signInWithGoogle from "@/lib/firebase/service";
 
 /**
  * NextAuth configuration options.
@@ -88,16 +87,7 @@ const authOptions: NextAuthOptions = {
    * @see https://next-auth.js.org/configuration/callbacks
    */
   callbacks: {
-    /**
-     * JWT callback.
-     *
-     * @param {object} token - JWT token.
-     * @param {object} account - Account object.
-     * @param {object} profile - Profile object.
-     * @param {object} user - User object.
-     * @returns {object} JWT token.
-     */
-    jwt({ token, account, profile, user }: any) {
+    async jwt({ token, account, profile, user }: any) {
       if (account?.provider === "credentials") {
         token.email = user.email;
         token.fullname = user.fullname;
@@ -112,15 +102,18 @@ const authOptions: NextAuthOptions = {
           role: "member",
         };
 
-        await signInWithGoogle(data, (result: any) => {
-          if (result.true) {
-            token.email = data.email;
-            token.fullname = data.fullname;
-            token.type = data.type;
-            token.image = data.image;
-            token.role = data.role;
+        await signInWithGoogle(
+          data,
+          (result: { status: boolean; message: string; data: any }) => {
+            if (result.status) {
+              token.email = result.data.email;
+              token.fullname = result.data.fullname;
+              token.type = result.data.type;
+              token.image = result.data.image;
+              token.role = result.data.role;
+            }
           }
-        });
+        );
       }
       return token;
     },
@@ -139,11 +132,11 @@ const authOptions: NextAuthOptions = {
       if ("fullname" in token) {
         session.user.fullname = token.fullname;
       }
-      if ("role" in token) {
-        session.user.role = token.role;
-      }
       if ("image" in token) {
         session.user.image = token.image;
+      }
+      if ("role" in token) {
+        session.user.role = token.role;
       }
       return session;
     },

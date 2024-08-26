@@ -54,13 +54,6 @@ export async function retrieveDataByID(collectionName: string, id: string) {
 
 /**
  * Signs in a user with an email and password.
- *
- * @param {{ email: string }} userData - The user data object with email.
- * @returns {Promise<any>} - A promise that resolves with the signed-in user data.
- *
- * @example
- * const userData = await signIn({ email: 'john@example.com' });
- * console.log(userData); // { id: 'user1', name: 'John Doe', email: 'john@example.com' }
  */
 export async function signIn(userData: { email: string }) {
   const q = query(
@@ -105,13 +98,12 @@ export async function signUp(
     password: string;
     role?: string;
   },
-  callback: (status: boolean, message: string) => void
+  callback: Function
 ) {
   const q = query(
     collection(firestore, "users"),
     where("email", "==", userData.email)
   );
-
   const snapshot = await getDocs(q);
   const data = snapshot.docs.map((doc) => ({
     id: doc.id,
@@ -129,6 +121,51 @@ export async function signUp(
     } catch (error: any) {
       callback(false, error.message);
     }
+  }
+}
+
+export async function signInWithGoogle(userData: any, callback: any) {
+  const q = query(
+    collection(firestore, "users"),
+    where("email", "==", userData.email)
+  );
+  const snapshot = await getDocs(q);
+  const data: any = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+  if (data.length > 0) {
+    userData.role = data[0].role;
+    await updateDoc(doc(firestore, "users", data[0].id), userData)
+      .then(() => {
+        callback({
+          status: true,
+          message: "Sign in with google success",
+          data: userData,
+        });
+      })
+      .catch(() => {
+        callback({
+          status: false,
+          message: "Sign in with google failed",
+        });
+      });
+  } else {
+    userData.role = "member";
+    await addDoc(collection(firestore, "users"), userData)
+      .then(() => {
+        callback({
+          status: true,
+          message: "Sign in with google success",
+          data: userData,
+        });
+      })
+      .catch(() => {
+        callback({
+          status: false,
+          message: "Sign in with google failed",
+        });
+      });
   }
 }
 

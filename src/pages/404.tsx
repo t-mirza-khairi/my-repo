@@ -8,8 +8,8 @@ const Custom404 = () => {
         src="/not-found.png"
         alt="Not Found"
         className={styles.error__image}
-        width={500}
-        height={300}
+        width={600}
+        height={600}
       />
       <div>Halaman Tidak Ditemukan</div>
     </div>

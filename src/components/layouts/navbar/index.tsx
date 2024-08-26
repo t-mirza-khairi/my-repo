@@ -9,11 +9,13 @@ const Navbar = () => {
     <div className={styles.navbar}>
       <div className="big">Navbar</div>
       <div className={styles.profile}>
-        {data.user.image && (
+        {data?.user?.image && (
           <Image
             className={styles.avatar}
             src={data.user.image}
             alt={data.user.fullname}
+            width={30}
+            height={30}
           />
         )}
         {data && data.user.fullname}{" "}
